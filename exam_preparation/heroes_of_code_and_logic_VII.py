@@ -1,6 +1,5 @@
-num_heroes = int(input())
 heroes = {}
-
+monsters = {}
 
 def add_modify_hero(hero, health, mana):
     if hero in heroes:
@@ -17,29 +16,44 @@ def add_modify_hero(hero, health, mana):
 
     return heroes
 
+def add_modify_monster(monster, health):
+    if monster in monsters:
+        if monsters[monster] + health <= 100:
+            monsters[monster] += health
+        else:
+            monsters[monster] = 100
+    else:
+        monsters[monster] = health
 
-def castspell(hero, mana, spell):
+    return monsters
+
+def cast_spell(hero, mana, spell, power, monster):
     if heroes[hero][1] >= mana:
         heroes[hero][1] -= mana
         print(f'{hero} has successfully cast {spell} and now has {heroes[hero][1]} MP!')
+        if monsters[monster] - power > 0:
+            monsters[monster] -= power
+            print(f'{monster} now has {monsters[monster]} left!')
+        else:
+            print(f'{monster} has been defeated!')
     else:
         print(f'{hero} does not have enough MP to cast {spell}!')
 
     return heroes
 
 
-def takedamage(hero, damage, attacker):
+def take_hit(hero, damage, monster):
     if heroes[hero][0] - damage > 0:
         heroes[hero][0] -= damage
-        print(f'{hero} was hit for {damage} HP by {attacker} and now has {heroes[hero][0]} HP left!')
+        print(f'{hero} was hit for {damage} HP by {monster} and now has {heroes[hero][0]} HP left!')
     else:
-        print(f'{hero} has been killed by {attacker}!')
+        print(f'{hero} has been slain by {monster}!')
         del heroes[hero]
 
     return heroes
 
 
-def recharge(hero, amount):
+def fill_energy(hero, amount):
     if heroes[hero][1] + amount > 200:
         print(f'{hero} recharged for {200 - heroes[hero][1]} MP!')
         heroes[hero][1] = 200
@@ -60,7 +74,15 @@ def heal(hero, amount):
 
     return heroes
 
+# Heroes add
+for i in range(1, num_heroes + 1):
+    hero, health, mana = input().split()
+    health = int(health)
+    mana = int(mana)
+    add_modify_hero(hero, health, mana)
 
+
+num_monsters = int(input())
 for i in range(1, num_heroes + 1):
     hero, health, mana = input().split()
     health = int(health)
